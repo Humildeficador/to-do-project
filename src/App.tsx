@@ -1,9 +1,7 @@
-import { DarkModeButton } from "./components/DarkModeButton/DarkModeButton";
-
+import { Task } from "./components/Task/Task";
+import { v4 as uuid } from 'uuid';
 export function App() {
   return (
-    <h1>
-      <DarkModeButton />
-    </h1>
+    <Task key={uuid()} />
   )
 }

@@ -4,9 +4,13 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'selector',
+  darkMode: ['selector',],
   theme: {
-    extend: {},
-  },
-  plugins: [],
+    extend: {
+      fontFamily: {
+        'poppins': ["Poppins", 'sans-serif']
+      }
+    },
+},
+plugins: [],
 }
