@@ -1,78 +1,66 @@
 import { TrashIcon } from 'lucide-react';
-import { ChangeEvent, useState } from "react";
-import { v4 as uuid } from 'uuid';
 import { AlertWrapper } from '../AlertWrapper/AlertWrapper';
 import { InsertNewTask } from "./InsertNewTask/InsertNewTask";
 import { TaskToDo } from "./TaskToDo/TaskToDo";
-
-interface TaskProps {
-    id: string,
-    content: string
-}
-
-interface WrapperProps {
-    showAlert: boolean
-    AlertWarning: boolean
-    AlertMessage: string
-}
-
-interface handleAlertProps {
-    AlertMessage: string
-    AlertWarning?: boolean
-}
+import { UseTaskManager } from './UseTaskManager';
+import { useEffect } from 'react';
 
 export function Task() {
-    const [taskValue, setTaskValue] = useState('')
-    const [taskList, setTaskList] = useState<TaskProps[]>([])
-    const [alert, setAlert] = useState<WrapperProps>({
-        AlertMessage: '',
-        AlertWarning: false,
-        showAlert: false
-    })
+    const {
+        taskValue,
+        taskList,
+        alert,
+        handleTaskValue,
+        handleAddNewTask,
+        handleDeleteTask,
+        localStorageTasks
+    } = UseTaskManager()
 
-    const handleAlert = ({ AlertMessage, AlertWarning = false }: handleAlertProps) => {
-        setAlert(() => ({ AlertMessage: AlertMessage, AlertWarning: AlertWarning, showAlert: true }))
-        setTimeout(() => {
-            setAlert(() => ({ AlertMessage: '', AlertWarning: false, showAlert: false }))
-        }, 2500)
-    }
-
-    const handleTaskValue = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-        setTaskValue(value)
-    }
-
-    const handleAddNewTask = () => {
-        try {
-            if (taskValue.trim() !== '') {
-                setTaskList((prevState) => [...prevState, { id: uuid(), content: taskValue.trim() }])
-                handleAlert({ AlertMessage: 'Nova tarefa adicionada com sucesso' })
-                setTaskValue('')
-            } else {
-                throw new Error(`Cannot assing empty value to task`)
-            }
-        } catch (error) {
-            console.error(error)
-            handleAlert({ AlertMessage: `${error}`, AlertWarning: true })
-        }
-    }
-
-    const handleDeleteTask = (id: string) => {
-        setTaskList(prevState => (
-            prevState.filter(task => task.id !== id)
-        ))
-    }
+    useEffect(() => {
+        localStorageTasks.load()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <div className="flex flex-col gap-2 p-4">
-            {alert.showAlert && <AlertWrapper AlertWarning={alert.AlertWarning}>{alert.AlertMessage}</AlertWrapper>}
-            <InsertNewTask callback={handleAddNewTask}
-                changeContent={handleTaskValue} text={taskValue} />
-            {taskList.map(({ id, content }) => (
-                <div className="flex gap-5 items-baseline">
-                    <TaskToDo key={id}>{content}</TaskToDo>
-                    <button onClick={() => { handleDeleteTask(id) }}><TrashIcon className="size-4" /></button>
+            {alert.showAlert &&
+                <AlertWrapper AlertWarning={alert.AlertWarning}>
+                    {alert.AlertMessage}
+                </AlertWrapper>}
+            <div className='flex items-center justify-evenly'>
+                <span className='text-3xl'><span className='text-red-600'>My</span> Tasks</span>
+                <InsertNewTask
+                    callback={handleAddNewTask}
+                    changeContent={handleTaskValue}
+                    text={taskValue}
+                />
+            </div>
+            {taskList.length ?
+                <div className='flex items-center justify-center mt-6'>
+                    <div className='border border-slate-600/50 rounded-lg xl:w-8/12 w-11/12 px-4'>
+                        <table className='w-full'>
+                            <tbody>
+                                {taskList.map(({ id, content }) => (
+                                    <tr className='border-b-[1px] border-slate-600/50 last-of-type:border-0' key={id}>
+                                        <td className='py-3 px-2.5'>
+                                            <TaskToDo>{content}</TaskToDo>
+                                        </td>
+                                        <td>
+                                            <div className='flex w-full justify-end'>
+                                                <button
+                                                    onClick={() => { handleDeleteTask(id) }}>
+                                                    <TrashIcon className="size-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            ))}
+                : null}
         </div>
     )
 }
