@@ -1,5 +1,5 @@
-import { ChangeEvent, KeyboardEvent } from "react"
-import { SquareCheckBig } from 'lucide-react'
+import { SquareCheckBig } from 'lucide-react';
+import { ChangeEvent, KeyboardEvent } from "react";
 
 interface InsertNewTaskProps {
   callback: () => void;
@@ -16,11 +16,11 @@ export function InsertNewTask({ callback, changeContent, text, placeholder = "En
   };
 
   return (
-    <div className="flex gap-1 h-10">
-      <div className="border-[1px] border-slate-600/50 rounded-md w-60 h-full content-center">
+    <div className="flex gap-2 h-10 w-72">
+      <div className="border border-slate-600/50 rounded-md w-10/12 h-full content-center">
         <input
           type="text"
-          className="bg-transparent outline-none pl-3 w-full"
+          className="bg-transparent outline-none pl-3"
           autoComplete="off"
           value={text}
           placeholder={placeholder}
@@ -28,7 +28,7 @@ export function InsertNewTask({ callback, changeContent, text, placeholder = "En
           onChange={changeContent}
         />
       </div>
-      <button className="h-full content-center" aria-label="Adicionar item" onClick={callback} >
+      <button className="border-slate-600/50 flex justify-center items-center border rounded-md w-10  hover:bg-slate-400/15 dark:hover:bg-slate-400/10" aria-label="Adicionar item" onClick={callback} >
         <SquareCheckBig />
       </button>
     </div>
