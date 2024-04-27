@@ -11,8 +11,13 @@ export function AlertWrapper({ children, AlertWarning = false }: AlertWrapperPro
                 absolute top-0 left-1/2
                 -translate-x-1/2
                 border
-                rounded-md
-                ${AlertWarning ? 'border-red-400' : 'border-green-400'}
+                rounded-lg
+                mt-4
+                px-4
+                py-2
+                dark:text-white
+                ${AlertWarning ? 'bg-red-400' : 'bg-green-400'}
+                ${AlertWarning ? 'border-red-600' : 'border-green-600'}
             `}
         >
             <span>{children}</span>

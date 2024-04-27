@@ -10,9 +10,7 @@ export function Task() {
         taskValue,
         taskList,
         alert,
-        handleTaskValue,
-        handleAddNewTask,
-        handleDeleteTask,
+        handleTaks,
         localStorageTasks
     } = UseTaskManager()
 
@@ -30,8 +28,8 @@ export function Task() {
             <div className='flex items-center justify-evenly'>
                 <span className='text-3xl'><span className='text-red-600'>My</span> Tasks</span>
                 <InsertNewTask
-                    callback={handleAddNewTask}
-                    changeContent={handleTaskValue}
+                    callback={handleTaks.add}
+                    changeContent={handleTaks.setValue}
                     text={taskValue}
                 />
             </div>
@@ -48,7 +46,7 @@ export function Task() {
                                         <td>
                                             <div className='flex w-full justify-end'>
                                                 <button
-                                                    onClick={() => { handleDeleteTask(id) }}>
+                                                    onClick={() => { handleTaks.delete(id) }}>
                                                     <TrashIcon className="size-4" />
                                                 </button>
                                             </div>

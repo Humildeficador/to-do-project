@@ -27,6 +27,13 @@ export function UseTaskManager() {
         showAlert: false
     })
 
+    const handleAlert = ({ AlertMessage, AlertWarning = false }: handleAlertProps) => {
+        setAlert(() => ({ AlertMessage, AlertWarning, showAlert: true }))
+        setTimeout(() => {
+            setAlert(() => ({ AlertMessage: '', AlertWarning: false, showAlert: false }))
+        }, 2500)
+    }
+
     const localStorageTasks = {
         get: () => {
             const localTasks = localStorage.getItem(LOCALSTORAGE_KEY)
@@ -48,48 +55,39 @@ export function UseTaskManager() {
         }
     }
 
-    const handleAlert = ({ AlertMessage, AlertWarning = false }: handleAlertProps) => {
-        setAlert(() => ({ AlertMessage, AlertWarning, showAlert: true }))
-        setTimeout(() => {
-            setAlert(() => ({ AlertMessage: '', AlertWarning: false, showAlert: false }))
-        }, 2500)
-    }
-
-    const handleTaskValue = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-        setTaskValue(value)
-    }
-
-    const handleAddNewTask = () => {
-        try {
-            if (taskValue.trim() !== '') {
-                const taskUuid = uuid()
-                setTaskList((prevState) => [...prevState, { id: taskUuid, content: taskValue.trim() }])
-                localStorageTasks.set({ id: taskUuid, content: taskValue.trim() })
-                handleAlert({ AlertMessage: 'Nova tarefa adicionada com sucesso' })
-                setTaskValue('')
-            } else {
-                throw new Error(`Cannot assing empty value to task`)
+    const handleTaks = {
+        add: () => {
+            try {
+                if (taskValue.trim() !== '') {
+                    const taskUuid = uuid()
+                    setTaskList((prevState) => [...prevState, { id: taskUuid, content: taskValue.trim() }])
+                    localStorageTasks.set({ id: taskUuid, content: taskValue.trim() })
+                    handleAlert({ AlertMessage: 'Nova tarefa adicionada com sucesso' })
+                    setTaskValue('')
+                } else {
+                    throw new Error(`Cannot assing empty value to task`)
+                }
+            } catch (error) {
+                console.error(error)
+                handleAlert({ AlertMessage: `${error}`, AlertWarning: true })
             }
-        } catch (error) {
-            console.error(error)
-            handleAlert({ AlertMessage: `${error}`, AlertWarning: true })
+        },
+        delete: (id: string) => {
+            setTaskList(prevState => (
+                prevState.filter(task => task.id !== id)
+            ))
+            localStorageTasks.delete(id)
+        },
+        setValue: ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+            setTaskValue(value)
         }
-    }
-
-    const handleDeleteTask = (id: string) => {
-        setTaskList(prevState => (
-            prevState.filter(task => task.id !== id)
-        ))
-        localStorageTasks.delete(id)
     }
 
     return {
         taskValue,
         taskList,
         alert,
-        handleTaskValue,
-        handleAddNewTask,
-        handleDeleteTask,
+        handleTaks,
         localStorageTasks
     }
 }
