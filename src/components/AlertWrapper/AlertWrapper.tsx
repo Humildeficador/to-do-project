@@ -10,7 +10,7 @@ export function AlertWrapper({ children, AlertWarning = false }: AlertWrapperPro
         <div className={`
                 absolute top-0 left-1/2
                 -translate-x-1/2
-                border-[1px]
+                border
                 rounded-md
                 ${AlertWarning ? 'border-red-400' : 'border-green-400'}
             `}
